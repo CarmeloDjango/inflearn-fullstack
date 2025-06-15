@@ -5,7 +5,12 @@ import { prisma } from "@/prisma";
 
 import CredentialsProvider from "next-auth/providers/credentials";
 import { comparePassword } from "./lib/password-utils";
-import { error } from "console";
+
+// import * as jwt from "jsonwebtoken";
+
+import { JWT } from "next-auth/jwt";
+
+import { SignJWT, jwtVerify, JWTPayload } from "jose";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   useSecureCookies: process.env.NODE_ENV === "production",
@@ -14,7 +19,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   secret: process.env.AUTH_SECRET,
   providers: [
     CredentialsProvider({
-      name: "Credentials",
+      name: "credentials",
       credentials: {
         email: {
           label: "이메일",
@@ -25,7 +30,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
       async authorize(credentials) {
         // 1. 모든 값들이 정상적으로 들어왔는가?
-        if (!credentials || credentials.email || credentials.password) {
+        if (!credentials || !credentials.email || !credentials.password) {
           throw new Error("이메일과 비밀번호를 입력해주세요.");
         }
 
@@ -56,6 +61,29 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   session: {
     strategy: "jwt",
+  },
+  // jwt: {
+  //   encode: async ({ token, secret }) => {
+  //     return jwt.sign(token as jwt.JwtPayload, secret as string);
+  //   },
+  //   decode: async ({ token, secret }) => {
+  //     return jwt.verify(token as string, secret as string) as JWT;
+  //   },
+  // },
+  jwt: {
+    encode: async ({ token, secret }) => {
+      const encodedSecret = new TextEncoder().encode(secret as string);
+      return await new SignJWT(token as JWTPayload)
+        .setProtectedHeader({ alg: "HS256" })
+        .setIssuedAt()
+        .setExpirationTime("1h")
+        .sign(encodedSecret);
+    },
+    decode: async ({ token, secret }) => {
+      const encodedSecret = new TextEncoder().encode(secret as string);
+      const { payload } = await jwtVerify(token!, encodedSecret);
+      return payload as JWT;
+    },
   },
   pages: {},
   callbacks: {},
