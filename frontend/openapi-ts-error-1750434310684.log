@@ -1,0 +1,8 @@
+[2025-06-20T15:45:10.684Z] Error: Request failed with status 200: 
+Stack:
+Error: Request failed with status 200: 
+    at Io (/Users/carmelo/Desktop/dev/inflearn-fullstack/frontend/node_modules/.pnpm/@hey-api+openapi-ts@0.74.0_typescript@5.8.3/node_modules/@hey-api/openapi-ts/dist/index.cjs:38:122945)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Promise.all (index 0)
+    at async Q$ (/Users/carmelo/Desktop/dev/inflearn-fullstack/frontend/node_modules/.pnpm/@hey-api+openapi-ts@0.74.0_typescript@5.8.3/node_modules/@hey-api/openapi-ts/dist/index.cjs:1338:4634)
+    at async start (/Users/carmelo/Desktop/dev/inflearn-fullstack/frontend/node_modules/.pnpm/@hey-api+openapi-ts@0.74.0_typescript@5.8.3/node_modules/@hey-api/openapi-ts/bin/index.cjs:131:21)
